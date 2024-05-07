@@ -7,7 +7,7 @@ from typing import AsyncGenerator
 
 async def async_generator() -> AsyncGenerator:
     """generates 10 numbers randomly"""
-    for i in range(10):
+    for _ in range(10):
         await asyncio.sleep(1)
         val = random.uniform(0, 10)
         yield val
