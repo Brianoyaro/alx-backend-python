@@ -1,7 +1,7 @@
 #!/usr/binenv python3
 '''module testing GithubOrgClient class
 '''
-from parameterized import parameterized, parameterized_class # type: ignore
+from parameterized import parameterized, parameterized_class   # type: ignore
 import unittest
 from unittest.mock import patch, Mock, PropertyMock
 from client import GithubOrgClient
