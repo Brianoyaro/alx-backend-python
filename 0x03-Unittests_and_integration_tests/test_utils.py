@@ -4,7 +4,7 @@
 from parameterized import parameterized   # type: ignore
 import unittest
 from unittest.mock import Mock, patch, NonCallableMock
-from utils import memoize, access_nested_map as n_map, get_json as g_json
+from utils import memoize, access_nested_map, get_json
 from typing import Union, Mapping, Sequence
 
 
@@ -21,7 +21,7 @@ class TestAccessNestedMap(unittest.TestCase):
                                expected: Union[int, Mapping]) -> None:
         '''actual test conglomerating several tests to one
         '''
-        self.assertEqual(n_map(nested_map, path), expected)
+        self.assertEqual(access_nested_map(nested_map, path), expected)
 
     @parameterized.expand([({}, ('a',)),
                            ({'a': 1}, ('a', 'b'))])
@@ -31,7 +31,7 @@ class TestAccessNestedMap(unittest.TestCase):
         '''tests exception raising in access_nested_map function
         '''
         with self.assertRaises(KeyError):
-            n_map(nested_map, path)
+            access_nested_map(nested_map, path)
 
 
 class TestGetJson(unittest.TestCase):
@@ -39,7 +39,7 @@ class TestGetJson(unittest.TestCase):
     '''
     @parameterized.expand([("http://example.com", {"payload": True}),
                            ("http://holberton.io", {"payload": False})])
-    @patch('requests.get')
+    @patch('utils.requests.get')
     def test_get_json(self,
                       test_url: str,
                       test_payload: Mapping,
@@ -52,7 +52,7 @@ class TestGetJson(unittest.TestCase):
         using mock_requests_get as our anchor
         '''
         mock_requests_get.return_value = mock_response
-        result = g_json(test_url)
+        result = get_json(test_url)
         '''Test that the mocked get method was called exactly
         once (per input) with test_url
         '''
