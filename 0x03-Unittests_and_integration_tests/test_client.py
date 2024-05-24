@@ -7,6 +7,7 @@ from unittest.mock import patch, Mock, PropertyMock
 from client import GithubOrgClient
 from typing import Mapping, Sequence
 from fixtures import TEST_PAYLOAD
+import fixtures
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -74,15 +75,28 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     '''tests the GithubOrgClient.public_repos method in an integration test
     by mocks code that sends external requests.
     '''
-    @patch('requests.get')
+    '''@patch('requests.get')
     def setup(self, mock_get_json):
-        '''setup function'''
+        self.get_patcher = patch
         mock_get_requests = Mock()
         mock_get_requests.json.return_value = self.repos_payload
         mock_get_json.return_value = mock_get_requests
 
     def teardown(self):
-        self.get_patcher.stop()
+        self.get_patcher.stop()'''
+
+    @classmethod
+    @patch('requests.get')
+    def setUpClass(cls, mock_get):
+        # cls.get_patcher = patch(cls.org_payload['repos_url'])
+        cls.get_patcher = patch('requests.get')
+        mock_response = Mock()
+        mock_response.json.return_value = cls.repos_payload
+        mock_get.return_value = mock_response
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.get_patcher.stop()
 
     @patch('requests.get')
     def test_public_repos(self, mock_get_json):
@@ -91,4 +105,13 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         mock_get_json.return_value = mock_get_requests
         instance = GithubOrgClient('some org')
         r_value = instance.public_repos()
-        self.assertEquals(r_value, self.expectedd_repos)
+        self.assertEquals(r_value, self.expected_repos)
+
+    '''@patch('requests.get')
+    def test_public_repos(self, mock_get_json):
+        mock_get_requests = Mock()
+        mock_get_requests.json.return_value = TEST_PAYLOAD
+        mock_get_json.return_value = mock_get_requests
+        instance = GithubOrgClient('some org')
+        r_value = instance.public_repos()
+        self.assertEquals(r_value, self.expected_repos)'''

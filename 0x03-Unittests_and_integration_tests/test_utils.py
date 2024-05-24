@@ -37,9 +37,11 @@ class TestAccessNestedMap(unittest.TestCase):
 class TestGetJson(unittest.TestCase):
     '''class testing get_json method
     '''
-    @parameterized.expand([("http://example.com", {"payload": True}),
-                           ("http://holberton.io", {"payload": False})])
-    @patch('utils.requests.get')
+    @parameterized.expand([
+        ("http://example.com", {"payload": True}),
+        ("http://holberton.io", {"payload": False})
+        ])
+    @patch('requests.get')
     def test_get_json(self,
                       test_url: str,
                       test_payload: Mapping,
@@ -80,4 +82,5 @@ class TestMemoize(unittest.TestCase):
             result = instance.a_property()
             result2 = instance.a_property()
             self.assertEqual(result, r_value)
+            self.assertEqual(result2, r_value)
             mock_a_method.assert_called_once()
