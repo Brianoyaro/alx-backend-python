@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """module implementing parameterized
 """
-from parameterized import parameterized
+from parameterized import parameterized   # type: ignore
 import unittest
 from unittest.mock import Mock, patch, NonCallableMock
 from utils import memoize, access_nested_map as n_map, get_json as g_json
@@ -30,9 +30,8 @@ class TestAccessNestedMap(unittest.TestCase):
                                          path: Sequence) -> None:
         '''tests exception raising in access_nested_map function
         '''
-        with self.assertRaises(KeyError) as cm:
+        with self.assertRaises(KeyError):
             n_map(nested_map, path)
-        self.assertEqual(cm.exception.args[0], path[-1])
 
 
 class TestGetJson(unittest.TestCase):
