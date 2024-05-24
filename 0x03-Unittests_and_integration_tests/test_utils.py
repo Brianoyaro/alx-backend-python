@@ -44,21 +44,11 @@ class TestGetJson(unittest.TestCase):
                       test_url: str,
                       test_payload: Mapping,
                       mock_requests_get: Mock) -> None:
-        '''Mock the response
-        '''
         mock_response = Mock()
         mock_response.json.return_value = test_payload
-        '''complete patching requests.get to get_json
-        using mock_requests_get as our anchor
-        '''
         mock_requests_get.return_value = mock_response
         result = get_json(test_url)
-        '''Test that the mocked get method was called exactly
-        once (per input) with test_url
-        '''
         mock_requests_get.assert_called_once_with(test_url)
-        '''Test that the output of get_json is equal to test_payload.
-        '''
         self.assertEqual(result, test_payload)
 
 
