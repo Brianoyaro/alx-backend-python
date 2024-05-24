@@ -1,4 +1,4 @@
-#!/usr/binenv python3
+#!/usr/bin/env python3
 '''module testing GithubOrgClient class
 '''
 from parameterized import parameterized, parameterized_class   # type: ignore
