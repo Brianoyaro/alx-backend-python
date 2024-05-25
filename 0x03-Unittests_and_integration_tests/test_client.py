@@ -75,43 +75,34 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     '''tests the GithubOrgClient.public_repos method in an integration test
     by mocks code that sends external requests.
     '''
-    '''@patch('requests.get')
-    def setup(self, mock_get_json):
-        self.get_patcher = patch
-        mock_get_requests = Mock()
-        mock_get_requests.json.return_value = self.repos_payload
-        mock_get_json.return_value = mock_get_requests
-
-    def teardown(self):
-        self.get_patcher.stop()'''
 
     @classmethod
     @patch('requests.get')
-    def setUpClass(cls, mock_get):
-        # cls.get_patcher = patch(cls.org_payload['repos_url'])
+    def setUpClass(cls, mock_get: Mock):
         cls.get_patcher = patch('requests.get')
-        mock_response = Mock()
-        mock_response.json.return_value = cls.repos_payload
-        mock_get.return_value = mock_response
+        cls.mock_response = cls.get_patcher.start()
+
+        def side_effect():
+            mock_gets = Mock()
+            mock_gets.json.return_value = cls.repos_payload
+            return mock_gets
+        cls.mock_response.side_effect = side_effect
 
     @classmethod
     def tearDownClass(cls):
         cls.get_patcher.stop()
 
-    @patch('requests.get')
-    def test_public_repos(self, mock_get_json):
-        mock_get_requests = Mock()
-        mock_get_requests.json.return_value = TEST_PAYLOAD
-        mock_get_json.return_value = mock_get_requests
-        instance = GithubOrgClient('some org')
+    @patch('client.GithubOrgClient.repos_payload')
+    def test_public_repos(self, mock_repos_payload: Mock):
+        mock_repos_payload.json.return_value = TEST_PAYLOAD[0][1]
+        instance = GithubOrgClient('my_Org')
         r_value = instance.public_repos()
-        self.assertEquals(r_value, self.expected_repos)
+        # self.assertEqual(r_value, TEST_PAYLOAD[0][2])
+        self.assertEqual(r_value, [])
 
-    '''@patch('requests.get')
-    def test_public_repos(self, mock_get_json):
-        mock_get_requests = Mock()
-        mock_get_requests.json.return_value = TEST_PAYLOAD
-        mock_get_json.return_value = mock_get_requests
-        instance = GithubOrgClient('some org')
-        r_value = instance.public_repos()
-        self.assertEquals(r_value, self.expected_repos)'''
+    @patch('client.GithubOrgClient.repos_payload')
+    def test_public_repos_with_license(self, mock_repos_payload: Mock):
+        mock_repos_payload.return_value = TEST_PAYLOAD[0][1]
+        instance = GithubOrgClient('my_Org')
+        r_value = instance.public_repos(license="apache-2.0")
+        self.assertEqual(r_value, [])

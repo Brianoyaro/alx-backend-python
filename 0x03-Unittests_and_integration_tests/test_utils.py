@@ -57,8 +57,7 @@ class TestGetJson(unittest.TestCase):
 class TestMemoize(unittest.TestCase):
     '''class testing memoization function
     '''
-    @parameterized.expand([42, 42])
-    def test_memoize(self, r_value: int) -> None:
+    def test_memoize(self) -> None:
         '''actually tests memoiozation
         '''
         class TestClass:
@@ -70,10 +69,10 @@ class TestMemoize(unittest.TestCase):
                 return self.a_method()
 
         @patch('TestClass.a_method')
-        def test_a_memoize(self, r_value: int, mock_a_method: Mock) -> None:
+        def test_a_memoize(self, mock_a_method: Mock) -> None:
             '''Use unittest.mock.patch to mock a_method.
             '''
-            mock_a_method.return_value = r_value
+            mock_a_method.return_value = 42
             instance = TestClass()
             '''Test that calling a_property twice, correct result is returned
             but a_method is only called once using assert_called_once.
@@ -81,6 +80,6 @@ class TestMemoize(unittest.TestCase):
             '''
             result = instance.a_property()
             result2 = instance.a_property()
-            self.assertEqual(result, r_value)
-            self.assertEqual(result2, r_value)
+            self.assertEqual(result, 42)
+            self.assertEqual(result2, 42)
             mock_a_method.assert_called_once()
